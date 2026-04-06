@@ -1,0 +1,50 @@
+serving:
+  backend: ollama
+  ollama:
+    host: http://localhost:11434
+    model: gemma4:e4b
+    temperature: 0.1
+    num_ctx: 8192
+
+rag:
+  embedding_model: all-MiniLM-L6-v2
+  vector_store: chroma
+  chroma:
+    host: http://localhost:8000
+    collection: playwright_docs
+  chunk_size: 512
+  chunk_overlap: 50
+  top_k: 5
+  hybrid:
+    enabled: true
+    bm25_weight: 0.3
+    vector_weight: 0.7
+
+context:
+  max_tokens: 6144
+  operators:
+    - selection
+    - displacement
+  displacement:
+    strategy: primacy_recency
+
+autoresearch:
+  level: rag
+  max_experiments: 100
+  search_space:
+    chunk_size: [256, 384, 512, 768, 1024]
+    chunk_overlap: [25, 50, 100, 150]
+    top_k: [3, 5, 7, 10]
+    bm25_weight: [0.1, 0.2, 0.3, 0.4, 0.5]
+
+eval:
+  weights:
+    syntax_validity: 0.4
+    api_accuracy: 0.3
+    convention_compliance: 0.3
+
+data:
+  sources:
+    playwright_docs: https://playwright.dev
+    currents_dev: https://github.com/currents-dev/playwright-best-practices-skill
+    sentinel: null  # set via CLI --path
